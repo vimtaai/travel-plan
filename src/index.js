@@ -41,7 +41,7 @@ export function generateTravelPlan(input) {
     const destinationsWithNoPrerequisites = getDestinationsWithNoPrerequisites(destinations);
 
     if (destinationsWithNoPrerequisites.length === 0) {
-      throw new Error("Unable to generate travel plan (circular or unexistent dependency)");
+      throw new Error("Unable to generate travel plan (circular or nonexistent prerequisite)");
     }
 
     for (const destination of destinationsWithNoPrerequisites) {

@@ -1,7 +1,7 @@
 {
-  "name": "travel-order",
+  "name": "travel-plan",
   "version": "0.1.0",
-  "description": "Travel order calulcator",
+  "description": "Travel plan generator",
   "scripts": {
     "test": "jest",
     "coverage": "jest --coverage"
