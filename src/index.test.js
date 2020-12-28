@@ -55,7 +55,7 @@ test("Multiple destinations with multiple prerequisites", () => {
   const input = ["u =>", "v => w", "w => z", "x => u", "y => v", "z =>"].join("\n");
   const travelPlan = generateTravelPlan(input);
 
-  const destinations = ["x", "y", "z"];
+  const destinations = ["u", "v", "w", "x", "y", "z"];
   for (const destination of destinations) {
     expect(getDestinationCount(travelPlan, destination)).toBe(1);
   }
