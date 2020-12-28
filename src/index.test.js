@@ -21,20 +21,18 @@ test("Multiple destinations, no prerequisites", () => {
   const input = ["x =>", "y =>", "z =>"].join("\n");
   const travelPlan = generateTravelPlan(input);
 
-  const destinations = ["x", "y", "z"];
-  for (const destination of destinations) {
-    expect(getDestinationCount(travelPlan, destination)).toBe(1);
-  }
+  expect(getDestinationCount(travelPlan, "x")).toBe(1);
+  expect(getDestinationCount(travelPlan, "y")).toBe(1);
+  expect(getDestinationCount(travelPlan, "z")).toBe(1);
 });
 
 test("Multiple destinations with one prerequisite (prerequsite before destination)", () => {
   const input = ["x =>", "y => z", "z =>"].join("\n");
   const travelPlan = generateTravelPlan(input);
 
-  const destinations = ["x", "y", "z"];
-  for (const destination of destinations) {
-    expect(getDestinationCount(travelPlan, destination)).toBe(1);
-  }
+  expect(getDestinationCount(travelPlan, "x")).toBe(1);
+  expect(getDestinationCount(travelPlan, "y")).toBe(1);
+  expect(getDestinationCount(travelPlan, "z")).toBe(1);
 
   expect(isPrerequisiteOK(travelPlan, "y", "z")).toBe(true);
 });
@@ -43,10 +41,9 @@ test("Multiple destinations with one prerequisite (destination before prerequisi
   const input = ["x =>", "z =>", "y => z"].join("\n");
   const travelPlan = generateTravelPlan(input);
 
-  const destinations = ["x", "y", "z"];
-  for (const destination of destinations) {
-    expect(getDestinationCount(travelPlan, destination)).toBe(1);
-  }
+  expect(getDestinationCount(travelPlan, "x")).toBe(1);
+  expect(getDestinationCount(travelPlan, "y")).toBe(1);
+  expect(getDestinationCount(travelPlan, "z")).toBe(1);
 
   expect(isPrerequisiteOK(travelPlan, "y", "z")).toBe(true);
 });
@@ -55,18 +52,20 @@ test("Multiple destinations with multiple prerequisites", () => {
   const input = ["u =>", "v => w", "w => z", "x => u", "y => v", "z =>"].join("\n");
   const travelPlan = generateTravelPlan(input);
 
-  const destinations = ["u", "v", "w", "x", "y", "z"];
-  for (const destination of destinations) {
-    expect(getDestinationCount(travelPlan, destination)).toBe(1);
-  }
+  expect(getDestinationCount(travelPlan, "x")).toBe(1);
+  expect(getDestinationCount(travelPlan, "y")).toBe(1);
+  expect(getDestinationCount(travelPlan, "z")).toBe(1);
+  expect(getDestinationCount(travelPlan, "u")).toBe(1);
+  expect(getDestinationCount(travelPlan, "v")).toBe(1);
+  expect(getDestinationCount(travelPlan, "w")).toBe(1);
 
-  const prerequisites = [
-    ["v", "w"],
-    ["w", "z"],
-    ["x", "u"],
-    ["y", "v"],
-  ];
-  for (const [destination, prerequisite] of prerequisites) {
-    expect(isPrerequisiteOK(travelPlan, destination, prerequisite)).toBe(true);
-  }
+  expect(isPrerequisiteOK(travelPlan, "v", "w")).toBe(true);
+  expect(isPrerequisiteOK(travelPlan, "w", "z")).toBe(true);
+  expect(isPrerequisiteOK(travelPlan, "x", "u")).toBe(true);
+  expect(isPrerequisiteOK(travelPlan, "y", "v")).toBe(true);
+});
+
+test("Circular dependency", () => {
+  const input = ["x =>", "u => v", "v => w", "w => u"].join("\n");
+  expect(() => generateTravelPlan(input)).toThrow();
 });
