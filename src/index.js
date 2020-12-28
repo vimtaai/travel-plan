@@ -9,6 +9,24 @@ function parseTravelPlanInput(input) {
   return input.split("\n").map(parseDestinationInput);
 }
 
+function getPrerequisitesByDestination(rules) {
+  const destinations = {};
+
+  for (const { destination, prerequisite } of rules) {
+    destinations[destination] = new Set();
+
+    if (prerequisite !== "") {
+      destinations[destination].add(prerequisite);
+    }
+  }
+
+  return destinations;
+}
+
+function getDestinationsWithNoPrerequisites(destinations) {
+  return Object.keys(destinations).filter((destination) => destinations[destination].size === 0);
+}
+
 /**
  * Generates a possible travel order based on given constraints
  * @param {string} input List of destinations and prerequisites
@@ -16,33 +34,21 @@ function parseTravelPlanInput(input) {
  */
 export function generateTravelPlan(input) {
   const rules = parseTravelPlanInput(input);
-  const destinations = new Set();
-  const prerequisites = {};
+  const destinations = getPrerequisitesByDestination(rules);
   const travelPlan = [];
 
-  for (const { destination, prerequisite } of rules) {
-    destinations.add(destination);
-    prerequisites[destination] = new Set();
+  while (Object.keys(destinations).length > 0) {
+    const destinationsWithNoPrerequisites = getDestinationsWithNoPrerequisites(destinations);
 
-    if (prerequisite !== "") {
-      prerequisites[destination].add(prerequisite);
-    }
-  }
-
-  while (destinations.size > 0) {
-    const dependencyFreeDestinations = Array.from(destinations).filter(
-      (destination) => prerequisites[destination].size === 0
-    );
-
-    if (dependencyFreeDestinations.length === 0) {
-      throw new Error("Circular dependency");
+    if (destinationsWithNoPrerequisites.length === 0) {
+      throw new Error("Unable to generate travel plan (circular or unexistent dependency)");
     }
 
-    for (const destination of dependencyFreeDestinations) {
+    for (const destination of destinationsWithNoPrerequisites) {
       travelPlan.push(destination);
-      destinations.delete(destination);
+      delete destinations[destination];
 
-      for (const prerequisites of Object.values(prerequisites)) {
+      for (const prerequisites of Object.values(destinations)) {
         prerequisites.delete(destination);
       }
     }

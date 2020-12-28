@@ -83,7 +83,7 @@ test("Repeated dependency", () => {
   expect(isPrerequisiteOK(travelPlan, "w", "y")).toBe(true);
 });
 
-test("Multiple dependencies for single destination", () => {
+test("Multiple dependencies for a single destination", () => {
   const input = ["x =>", "y => z", "u => z", "y => u", "z =>"].join("\n");
   const travelPlan = generateTravelPlan(input);
 
